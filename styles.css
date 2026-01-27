@@ -1,0 +1,49 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    margin: 0;
+    height: 100vh;
+    flex-direction: column;
+    gap: 20px;
+    font-family: Arial;
+}
+
+body * {
+    padding: 0;
+    margin: 0;
+}
+
+#title {
+    font-size: 20px;
+}
+
+.container {
+    display: grid;
+    grid-template-columns: repeat(3, 5rem);
+    grid-template-rows: repeat(3, 5rem);
+    gap: 5px;
+}
+
+.gameGrid {
+    background-color: #dbdbdb;
+    border-radius: 15px;
+    font-size: 3rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.playerInfo {
+    font-size: 15px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+button {
+    border-radius: 8px;
+    padding: 5px 10px;
+}
