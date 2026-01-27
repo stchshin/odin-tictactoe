@@ -7,7 +7,19 @@
     <link href="styles.css" rel="stylesheet">
 </head>
 <body>
-    <p id="title">Tic Tac Toe</p>
+    <div class="popup">
+        <p class="title">Tic Tac Toe</p>
+        <label for="player1name">
+            Player 1:
+            <input id="player1name" type="text">
+        </label>
+        <label for="player2name">
+            Player 2:
+            <input id="player2name" type="text">
+        </label>
+        <button id="start">Start Game</button>
+    </div>
+    <p class="title">Tic Tac Toe</p>
     <div class="container">
         <div class="gameGrid" id="grid0"></div>
         <div class="gameGrid" id="grid1"></div>
@@ -21,45 +33,94 @@
         <div class="gameGrid" id="grid9"></div>
     </div>
     <div class="playerInfo">
-        <p id="playerNames">Cinnamon vs Roll</p>
-        <p id="turn">Cinnamon's turn</p>
-        <p id="result">Cinnamon wins!</p>
-        <button>Play Again</button>
+        <p id="playerNames"><span id="player1"></span> vs <span id="player2"></span></p>
+        <p id="turnp"><span id="turn"></span>'s turn</p>
+        <p id="result"><span id="winner"></span> wins!</p>
+        <button id="playAgain">Play Again</button>
     </div>
     <script>
         const game = (function() {
             let gameboard = [];
-            let player = 'player1';
-            document.querySelector('.container')
+            
+            let player1 = '';
+            let player2 = '';
+            let player = '';
 
             const initialise = function() {
+                document.querySelector('.popup').style.display = 'flex';
+                document.querySelector('#player1name').value = '';
+                document.querySelector('#player2name').value = '';
+
+                document.querySelectorAll('.gameGrid').forEach(grid => grid.textContent = '');
+                document.querySelector('#playerNames').style.display = 'none';
+                document.querySelector('#turnp').style.display = 'none';
+                document.querySelector('#result').style.display = 'none';
+                document.querySelector('#playAgain').style.display = 'none';
+                
                 for (let i = 0; i < 9; i++) {
                     gameboard[i] = ['*', 'free'];
                 }
+
+                document.querySelector('#start').addEventListener('click', function() {
+                    document.querySelector('.popup').style.display = 'none';
+                    document.querySelector('#playerNames').style.display = 'block';
+                    document.querySelector('#turnp').style.display = 'block';
+
+                    player1 = document.querySelector('#player1name').value;
+                    player2 = document.querySelector('#player2name').value;
+                    document.querySelector('#player1').textContent = player1;
+                    document.querySelector('#player2').textContent = player2;
+                    document.querySelector('#turn').textContent = player1;
+                    player = player1;
+                })
             }
 
-            const turn = () => (player);
-            const turnSwitch = () => {
-                if (player == 'player1') {
-                    player = 'player2';
-                } else {
-                    player = 'player1';
-                }
+            const player1Name = () => (player1);
+            const player2Name = () => (player2);
+
+            const turn = function() {
+                document.querySelector('#turn').textContent = player;
+                return player;
             }
 
             const player1Add = (index) => {
                 gameboard[index][0] = 'X';
                 gameboard[index][1] = 'locked';
+                player = player2;
+                document.querySelector('#turn').textContent = player2;
             }
             const player2Add = (index) => {
                 gameboard[index][0] = 'O';
                 gameboard[index][1] = 'locked';
+                player = player1;
+                document.querySelector('#turn').textContent = player1;
             }
 
             const status = (index) => (gameboard[index][1]);
             const currentBoard = () => (gameboard);
+            const gridSelect = function(index) {
+                return document.querySelector(`#grid${index}`).textContent;
+            }
 
-            return { initialise, turn, turnSwitch, player1Add, player2Add, status, currentBoard };
+            const win = () => {
+                let winner;
+                if (newGame.turn() == newGame.player1Name()) {
+                    winner = player2;
+                } else {
+                    winner = player1;
+                }
+        
+                for (let i = 0; i < 9; i++) {
+                    gameboard[i][1] = 'locked';
+                }
+
+                document.querySelector('#turnp').style.display = 'none';
+                document.querySelector('#result').style.display = 'block';
+                document.querySelector('#playAgain').style.display = 'block';
+                document.querySelector('#winner').textContent = winner;
+            }
+
+            return { initialise, player1Name, player2Name, turn, player1Add, player2Add, status, currentBoard, gridSelect, win };
         })
 
         let newGame = game();
@@ -69,18 +130,36 @@
             grid.addEventListener('click', function() {
                 let gridId = Number(grid.id.slice(-1));
                 if (newGame.status(gridId) == 'locked') {
-                } else if (newGame.turn() == 'player1') {
+                } else if (newGame.turn() == newGame.player1Name()) {
                     grid.textContent = 'X';
                     newGame.player1Add(gridId);
-                    newGame.turnSwitch();
                 } else {
                     grid.textContent = 'O';
                     newGame.player2Add(gridId);
-                    newGame.turnSwitch();
                 }
                 
+                for (let i = 0; i < 9; i++) {
+                    if (i == 0 || i == 3 || i == 6) {
+                        if (newGame.gridSelect(i) == newGame.gridSelect(i + 1) && newGame.gridSelect(i + 1) == newGame.gridSelect(i + 2) && newGame.gridSelect(i) != '') {
+                            newGame.win();
+                        }
+                    }
+                    if (i == 0 || i == 1 || i == 2) {
+                        if (newGame.gridSelect(i) == newGame.gridSelect(i + 3) && newGame.gridSelect(i + 3) == newGame.gridSelect(i + 6) && newGame.gridSelect(i) != '') {
+                            newGame.win();
+                        }
+                    }
+                    if (i == 4) {
+                        if ((newGame.gridSelect(i) == newGame.gridSelect(0) && newGame.gridSelect(i) == newGame.gridSelect(8) && newGame.gridSelect(4) != '')
+                        || (newGame.gridSelect(i) == newGame.gridSelect(2) && newGame.gridSelect(i) == newGame.gridSelect(6) && newGame.gridSelect(4) != '')) {
+                            newGame.win();
+                        } 
+                    }
+                }
             })
         })
+
+        document.querySelector('#playAgain').addEventListener('click', () => newGame.initialise());
     </script>
 </body>
 </html>
