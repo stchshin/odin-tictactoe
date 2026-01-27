@@ -62,16 +62,21 @@
                 }
 
                 document.querySelector('#start').addEventListener('click', function() {
-                    document.querySelector('.popup').style.display = 'none';
-                    document.querySelector('#playerNames').style.display = 'block';
-                    document.querySelector('#turnp').style.display = 'block';
-
                     player1 = document.querySelector('#player1name').value;
                     player2 = document.querySelector('#player2name').value;
-                    document.querySelector('#player1').textContent = player1;
-                    document.querySelector('#player2').textContent = player2;
-                    document.querySelector('#turn').textContent = player1;
-                    player = player1;
+
+                    if (player1 == '' || player2 == '') {
+                        alert('Please type in a name!');
+                    } else {
+                        document.querySelector('.popup').style.display = 'none';
+                        document.querySelector('#playerNames').style.display = 'block';
+                        document.querySelector('#turnp').style.display = 'block';
+                        
+                        document.querySelector('#player1').textContent = player1;
+                        document.querySelector('#player2').textContent = player2;
+                        document.querySelector('#turn').textContent = player1;
+                        player = player1;
+                    }
                 })
             }
 
