@@ -106,22 +106,27 @@
                 return document.querySelector(`#grid${index}`).textContent;
             }
 
-            const win = () => {
-                let winner;
-                if (newGame.turn() == newGame.player1Name()) {
-                    winner = player2;
-                } else {
-                    winner = player1;
-                }
-        
-                for (let i = 0; i < 9; i++) {
-                    gameboard[i][1] = 'locked';
-                }
-
+            const win = (type) => {
                 document.querySelector('#turnp').style.display = 'none';
                 document.querySelector('#result').style.display = 'block';
                 document.querySelector('#playAgain').style.display = 'block';
-                document.querySelector('#winner').textContent = winner;
+                
+                if (type == 'win') {
+                    let winner;
+                    if (newGame.turn() == newGame.player1Name()) {
+                        winner = player2;
+                    } else {
+                        winner = player1;
+                    }
+            
+                    for (let i = 0; i < 9; i++) {
+                        gameboard[i][1] = 'locked';
+                    }
+
+                    document.querySelector('#winner').textContent = winner;
+                } else {
+                    document.querySelector('#result').textContent = 'A tie!';
+                }
             }
 
             return { initialise, player1Name, player2Name, turn, player1Add, player2Add, status, currentBoard, gridSelect, win };
@@ -141,23 +146,33 @@
                     grid.textContent = 'O';
                     newGame.player2Add(gridId);
                 }
-                
+
                 for (let i = 0; i < 9; i++) {
                     if (i == 0 || i == 3 || i == 6) {
                         if (newGame.gridSelect(i) == newGame.gridSelect(i + 1) && newGame.gridSelect(i + 1) == newGame.gridSelect(i + 2) && newGame.gridSelect(i) != '') {
-                            newGame.win();
+                            newGame.win('win');
                         }
                     }
                     if (i == 0 || i == 1 || i == 2) {
                         if (newGame.gridSelect(i) == newGame.gridSelect(i + 3) && newGame.gridSelect(i + 3) == newGame.gridSelect(i + 6) && newGame.gridSelect(i) != '') {
-                            newGame.win();
+                            newGame.win('win');
                         }
                     }
                     if (i == 4) {
                         if ((newGame.gridSelect(i) == newGame.gridSelect(0) && newGame.gridSelect(i) == newGame.gridSelect(8) && newGame.gridSelect(4) != '')
                         || (newGame.gridSelect(i) == newGame.gridSelect(2) && newGame.gridSelect(i) == newGame.gridSelect(6) && newGame.gridSelect(4) != '')) {
-                            newGame.win();
+                            newGame.win('win');
                         } 
+                    }
+
+                    for (let j = 0; j < 9; j++) {
+                        if (newGame.gridSelect(j) != '') {
+                            if (j == 8) {
+                                newGame.win('tie');
+                            }
+                        } else {
+                            break;
+                        }
                     }
                 }
             })
