@@ -35,6 +35,7 @@
         <p id="playerNames"><span id="player1"></span> vs <span id="player2"></span></p>
         <p id="turnp"><span id="turn"></span>'s turn</p>
         <p id="result"><span id="winner"></span> wins!</p>
+        <p id="tie">A tie!</p>
         <button id="playAgain">Play Again</button>
     </div>
     <script>
@@ -45,6 +46,28 @@
             let player2 = '';
             let player = '';
 
+            const startSetup = function () {
+                for (let i = 0; i < 9; i++) {
+                    gameboard[i][1] = 'free';
+                }
+
+                player1 = document.querySelector('#player1name').value;
+                player2 = document.querySelector('#player2name').value;
+
+                if (player1 == '' || player2 == '') {
+                    alert('Please type in a name!');
+                } else {
+                    document.querySelector('.popup').style.display = 'none';
+                    document.querySelector('#playerNames').style.display = 'block';
+                    document.querySelector('#turnp').style.display = 'block';
+                    
+                    document.querySelector('#player1').textContent = player1;
+                    document.querySelector('#player2').textContent = player2;
+                    document.querySelector('#turn').textContent = player1;
+                    player = player1;
+                }
+            }
+
             const initialise = function() {
                 document.querySelector('.popup').style.display = 'flex';
                 document.querySelector('#player1name').value = '';
@@ -54,29 +77,14 @@
                 document.querySelector('#playerNames').style.display = 'none';
                 document.querySelector('#turnp').style.display = 'none';
                 document.querySelector('#result').style.display = 'none';
+                document.querySelector('#tie').style.display = 'none';
                 document.querySelector('#playAgain').style.display = 'none';
                 
                 for (let i = 0; i < 9; i++) {
-                    gameboard[i] = ['*', 'free'];
+                    gameboard[i] = ['*', 'locked'];
                 }
 
-                document.querySelector('#start').addEventListener('click', function() {
-                    player1 = document.querySelector('#player1name').value;
-                    player2 = document.querySelector('#player2name').value;
-
-                    if (player1 == '' || player2 == '') {
-                        alert('Please type in a name!');
-                    } else {
-                        document.querySelector('.popup').style.display = 'none';
-                        document.querySelector('#playerNames').style.display = 'block';
-                        document.querySelector('#turnp').style.display = 'block';
-                        
-                        document.querySelector('#player1').textContent = player1;
-                        document.querySelector('#player2').textContent = player2;
-                        document.querySelector('#turn').textContent = player1;
-                        player = player1;
-                    }
-                })
+                document.querySelector('#start').addEventListener('click', startSetup);
             }
 
             const player1Name = () => (player1);
@@ -108,10 +116,10 @@
 
             const win = (type) => {
                 document.querySelector('#turnp').style.display = 'none';
-                document.querySelector('#result').style.display = 'block';
                 document.querySelector('#playAgain').style.display = 'block';
                 
                 if (type == 'win') {
+                    document.querySelector('#result').style.display = 'block';
                     let winner;
                     if (newGame.turn() == newGame.player1Name()) {
                         winner = player2;
@@ -125,8 +133,12 @@
 
                     document.querySelector('#winner').textContent = winner;
                 } else {
-                    document.querySelector('#result').textContent = 'A tie!';
+                    if (!winner) {
+                        document.querySelector('#tie').style.display = 'block';
+                    }
                 }
+                document.querySelector('#start').removeEventListener('click', startSetup);
+                document.querySelector('#start').addEventListener('click', startSetup);
             }
 
             return { initialise, player1Name, player2Name, turn, player1Add, player2Add, status, currentBoard, gridSelect, win };
