@@ -133,9 +133,7 @@
 
                     document.querySelector('#winner').textContent = winner;
                 } else {
-                    if (!winner) {
-                        document.querySelector('#tie').style.display = 'block';
-                    }
+                    document.querySelector('#tie').style.display = 'block';
                 }
                 document.querySelector('#start').removeEventListener('click', startSetup);
                 document.querySelector('#start').addEventListener('click', startSetup);
