@@ -72,6 +72,7 @@
                 document.querySelector('.popup').style.display = 'flex';
                 document.querySelector('#player1name').value = '';
                 document.querySelector('#player2name').value = '';
+                document.querySelector('#winner').textContent = '';
 
                 document.querySelectorAll('.gameGrid').forEach(grid => grid.textContent = '');
                 document.querySelector('#playerNames').style.display = 'none';
@@ -130,10 +131,12 @@
                     for (let i = 0; i < 9; i++) {
                         gameboard[i][1] = 'locked';
                     }
-
+                    
                     document.querySelector('#winner').textContent = winner;
+                    document.querySelector('#tie').style.display = 'none';
                 } else {
                     document.querySelector('#tie').style.display = 'block';
+                
                 }
                 document.querySelector('#start').removeEventListener('click', startSetup);
                 document.querySelector('#start').addEventListener('click', startSetup);
@@ -177,7 +180,7 @@
 
                     for (let j = 0; j < 9; j++) {
                         if (newGame.gridSelect(j) != '') {
-                            if (j == 8) {
+                            if (j == 8 && document.querySelector('#winner').textContent == '') {
                                 newGame.win('tie');
                             }
                         } else {
